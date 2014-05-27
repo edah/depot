@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+    
+ 
+ <!-- Placholders to import inherited variables -->
+	<bean id="project-properties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders">
+			<value>true</value>
+		</property>
+		<property name="locations">
+			<list>
+				<value>
+						classpath:database.properties
+				</value>
+			</list>
+		</property>
+	</bean>   
+    
+<!-- 	<import resource="classpath:datasource.xml"/> -->
+
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	<property name="driverClassName" value="${connection.driver_class}" />
+		<property name="url" value="${connection.url}" />
+		<property name="password" value="${connection.password}" />
+		<property name="username" value="${connection.username}" />
+</bean>
+	
+
+<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+	<property name="dataSource" ref="dataSource" />
+	<!-- <property name="packagesToScan" value="org.madbit.hibernate.entity" />  -->
+	<property name="mappingResources">
+			<list>
+				<value>org/madbit/hibernate/entity/User.hbm.xml</value>
+				<value>org/madbit/hibernate/entity/Agency.hbm.xml</value>
+				<value>org/madbit/hibernate/entity/Company.hbm.xml</value>
+				
+			</list>
+		</property> 
+	<property name="hibernateProperties">
+		<props>
+			<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+			<prop key="hibernate.hbm2ddl.auto">update</prop>
+			<prop key="hibernate.show_sql">false</prop>
+		</props>
+	</property>
+</bean>
+
+
+
+
+<bean id="userDAO" class="org.madbit.hibernate.dao.UserDAO" >
+	<property name="sessionFactory" ref="sessionFactory" />
+</bean>
+
+<bean id="companyDAO" class="org.madbit.hibernate.dao.CompanyDAO" >
+	<property name="sessionFactory" ref="sessionFactory" />
+</bean>
+<bean id="agencyDAO" class="org.madbit.hibernate.dao.AgencyDAO" >
+	<property name="sessionFactory" ref="sessionFactory" />
+</bean>
+
+
+<bean id="serviceUser" class="org.madbit.hibernate.service.UserSERVICE" >
+	<property name="userDAO" ref="userDAO" />
+</bean>
+
+<bean id="serviceCompany" class="org.madbit.hibernate.service.CompanySERVICE" >
+	<property name="CompanyDAO" ref="companyDAO" />
+</bean>
+
+
+
+<bean id="serviceAgency" class="org.madbit.hibernate.service.AgencySERVICE" >
+	<property name="AgencyDAO" ref="agencyDAO" />
+</bean>
+
+<bean name="/addUser" class="org.madbit.hibernate.pages.AddUserAction" >
+	<property name="userSERVICE" ref="serviceUser" />
+</bean>
+
+<bean name="/listUser" class="org.madbit.hibernate.pages.ListUserAction" >
+	<property name="userSERVICE" ref="serviceUser" />
+</bean>
+
+
+
+<bean name="/addCompany" class="org.madbit.hibernate.pages.AddCompanyAction" >
+	<property name="CompanySERVICE" ref="serviceCompany" />
+</bean>
+
+<bean name="/listCompany" class="org.madbit.hibernate.pages.ListCompanyAction" >
+	<property name="CompanySERVICE" ref="serviceCompany" />
+</bean>
+
+
+
+
+<bean name="/addAgency" class="org.madbit.hibernate.pages.AddAgencyAction" >
+	<property name="AgencySERVICE" ref="serviceAgency" />
+</bean>
+
+<bean name="/listAgency" class="org.madbit.hibernate.pages.ListAgencyAction" >
+	<property name="AgencySERVICE" ref="serviceAgency" />
+</bean>
+
+
+
+
+
+
+<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+	<property name="sessionFactory" ref="sessionFactory" />
+</bean>
+
+
+	<!-- Register @Autowired annotation -->
+<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+
+ <tx:annotation-driven transaction-manager="transactionManager"/> 
+
+
+</beans>

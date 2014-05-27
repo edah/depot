@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC 
+"-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" 
+"http://jakarta.apache.org/struts/dtds/struts-config_1_3.dtd">
+ 
+<struts-config>
+ 
+	<form-beans>
+	<form-bean name="companyForm"   
+		      type="org.madbit.hibernate.pages.CompanyForm" />
+		
+		<form-bean name="dynaCompanyListForm"   
+		      type="org.apache.struts.action.DynaActionForm">
+		      <form-property name="CompanyList" type="java.util.List"/>
+		</form-bean>
+		
+		<form-bean name="agencyForm"   
+		      type="org.madbit.hibernate.pages.AgencyForm" />
+		
+		<form-bean name="dynaAgencyListForm"   
+		      type="org.apache.struts.action.DynaActionForm">
+		      <form-property name="AgencyList" type="java.util.List"/>
+		</form-bean>
+		
+		<form-bean name="userForm"   
+		      type="org.madbit.hibernate.pages.UserForm" />
+		
+		<form-bean name="dynaUserListForm"   
+		      type="org.apache.struts.action.DynaActionForm">
+		      <form-property name="userList" type="java.util.List"/>
+		</form-bean>
+		
+	</form-beans>
+	
+	<action-mappings>
+	
+	<action
+			path="/addCompany"
+			type = "org.springframework.web.struts.DelegatingActionProxy"
+			name="companyForm"
+			validate="true"
+			input="/pages/add_Company.jsp"
+			>	
+ 
+			<forward name="success" redirect="true" path="/listCompany.do"/>
+		</action>
+		
+		<action
+			path="/listCompany"
+			type = "org.springframework.web.struts.DelegatingActionProxy"
+			name="dynaCompanyListForm"
+			>	
+ 
+			<forward name="success" path="/pages/list_Company.jsp"/>
+		</action>
+		
+		<action
+			path="/AddCompanyPage"
+			type="org.apache.struts.actions.ForwardAction"
+			parameter="/pages/add_Company.jsp"/>
+			
+			<action
+			path="/addAgency"
+			type = "org.springframework.web.struts.DelegatingActionProxy"
+			name="agencyForm"
+			validate="true"
+			input="/pages/add_Agency.jsp"
+			>	
+ 
+			<forward name="success" redirect="true" path="/listAgency.do"/>
+		</action>
+		
+		<action
+			path="/listAgency"
+			type = "org.springframework.web.struts.DelegatingActionProxy"
+			name="dynaAgencyListForm"
+			>	
+ 
+			<forward name="success" path="/pages/list_Agency.jsp"/>
+		</action>
+		
+		<action
+			path="/AddAgencyPage"
+			type="org.apache.struts.actions.ForwardAction"
+			parameter="/pages/add_Agency.jsp"/>
+			
+
+	 	<action
+			path="/AddUserPage"
+			type="org.apache.struts.actions.ForwardAction"
+			parameter="/pages/add_user.jsp"/>
+
+
+		<action
+			path="/addUser"
+			type = "org.springframework.web.struts.DelegatingActionProxy"
+			name="userForm"
+			validate="true"
+			input="/pages/add_user.jsp"
+			>	
+ 
+			<forward name="success" redirect="true" path="/listUser.do"/>
+		</action>
+		
+		<action
+			path="/listUser"
+			type = "org.springframework.web.struts.DelegatingActionProxy"
+			name="dynaUserListForm"
+			>	
+ 
+			<forward name="success" path="/pages/list_user.jsp"/>
+		</action>
+		
+		
+	</action-mappings>
+ 
+	<message-resources
+		parameter="User" />
+ 
+ 	<!-- Spring Struts plugin -->
+	<plug-in className="org.springframework.web.struts.ContextLoaderPlugIn">
+		<set-property property="contextConfigLocation"
+		value="/WEB-INF/classes/ApplicationContext.xml" />
+  	</plug-in> 
+ 
+</struts-config>
